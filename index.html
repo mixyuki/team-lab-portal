@@ -274,7 +274,7 @@
     submit.appendChild(uploadLink);
 
     const question = document.getElementById('link-question');
-    const templateUrl = `${repo}/issues/new?labels=question&title=${encodeURIComponent('[質問] ')}&body=${encodeURIComponent('### 何が起きた？\\n\\n\\n### 期待する挙動\\n\\n\\n### 再現手順\\n1.\\n2.\\n3.\\n\\n### 環境\\n- ブラウザ/OS:\\n- ブランチ/コミット:')}`;
+    const templateUrl = `${repo}/issues/new?labels=question&title=${encodeURIComponent('[質問]～なのですが～はどうやったら修正できますかなどなど ')}&body=${encodeURIComponent('質問内容をココに')}`;
     question.href = templateUrl;
 
     document.getElementById('link-templates').href = `${repo}/tree/main/templates`;
