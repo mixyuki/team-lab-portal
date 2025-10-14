@@ -6,8 +6,6 @@ p5.js グループワーク向けの **提出・質問・テンプレ・仕様�
 
 - **公開サイト**  
   https://mixyuki.github.io/team-lab-portal/
-- **リポジトリ**  
-  https://github.com/mixyuki/team-lab-portal
 
 ## ⚡ クイックリンク
 
@@ -23,13 +21,3 @@ p5.js グループワーク向けの **提出・質問・テンプレ・仕様�
   https://github.com/mixyuki/team-lab-portal/blob/main/docs/spec.md
 - **進捗ボード（GitHub Projects）**  
   https://github.com/mixyuki/team-lab-portal/projects
-
-## 🗓️ 右サイド：締切カレンダー & 告知
-
-サイト右側に **締切カレンダー** と **告知欄** が常時表示されます（サイト上には説明文を表示していません）。  
-編集は JSON を更新するだけです。
-
-### 締切（`deadlines.json`）
-- 直接表示: https://github.com/mixyuki/team-lab-portal/blob/main/deadlines.json  
-- 直接編集: https://github.com/mixyuki/team-lab-portal/edit/main/deadlines.json  
-- ページの「ICS をダウンロード」からカレンダー登録可
