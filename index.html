@@ -11,10 +11,9 @@
       --panel:#1f1a12; --panel-hi:#2a2418;
       --text:#f3e7d0; --muted:#b79e7a; --accent:#f1d18a;
       --shadow:rgba(0,0,0,.45);
-      --gearA1:#f3d590; --gearA2:#a37a3a; /* brass gradients */
+      --gearA1:#f3d590; --gearA2:#a37a3a;
       --gearB1:#eaca88; --gearB2:#b6843f;
     }
-
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -49,7 +48,7 @@
     .reverse{ animation-direction:reverse; }
     @keyframes spin{ to{ transform:rotate(360deg); } }
 
-    /* ===== background faint gears in body ===== */
+    /* ===== faint big gears in body ===== */
     .bggears{ position:fixed; inset:auto -200px -120px -200px; top:40%; z-index:0; pointer-events:none; opacity:.18; }
     .bggears .g{ position:absolute; }
     .bggears .g svg{ filter:drop-shadow(0 6px 12px rgba(0,0,0,.5)); }
@@ -76,17 +75,6 @@
     .card h3{ margin:6px 0 8px; font-size:18px; }
     .card p{ margin:0; color:var(--muted); font-size:13px; line-height:1.6; }
 
-    /* 角リベットのみ（エッジの点々は廃止） */
-    .rivets::before{
-      content:""; position:absolute; inset:0; pointer-events:none;
-      background:
-        radial-gradient(circle at 14px 14px, #e0c07a 0 5px, #7a5a2b 6px 7px, transparent 8px) top left,
-        radial-gradient(circle at calc(100% - 14px) 14px, #e0c07a 0 5px, #7a5a2b 6px 7px, transparent 8px) top right,
-        radial-gradient(circle at 14px calc(100% - 14px), #e0c07a 0 5px, #7a5a2b 6px 7px, transparent 8px) bottom left,
-        radial-gradient(circle at calc(100% - 14px) calc(100% - 14px), #e0c07a 0 5px, #7a5a2b 6px 7px, transparent 8px) bottom right;
-      background-repeat:no-repeat; background-size: 16px 16px;
-    }
-
     aside{ position:sticky; top:16px; align-self:start; }
     .widget{
       background:linear-gradient(180deg, #2a2418, #1f1a12);
@@ -106,7 +94,7 @@
     .title{ font-size:14px; }
     .note{ color:var(--muted); font-size:12px; }
 
-    footer{ max-width:1200px; margin:10px auto 60px; padding:0 20px; color:var(--muted); font-size:12px }
+    footer{ display:none; } /* ← フッターの文言は非表示 */
     code.inline{ background:#00000033; padding:.15em .4em; border-radius:6px; border:1px solid #00000055 }
 
     @media (prefers-reduced-motion: reduce){
@@ -115,20 +103,20 @@
   </style>
 </head>
 <body>
-  <!-- 多数の歯車を配置する領域（ヘッダー） -->
   <header>
     <div class="gearfield" id="gearfield" aria-hidden="true"></div>
     <div class="brand">チームLAB</div>
     <div class="tagline">p5.js グループワーク向け・提出＆連絡ポータル</div>
   </header>
 
-  <!-- 本文の淡い大歯車（背景） -->
+  <!-- 背景の淡い大歯車（邪魔にならない程度） -->
   <div class="bggears" aria-hidden="true">
     <div class="g" style="left:-40px; bottom:-30px; transform:rotate(8deg);">
       <svg viewBox="-50 -50 100 100" width="280" height="280">
         <defs><linearGradient id="bgG" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--gearA1)"/><stop offset="1" stop-color="var(--gearA2)"/></linearGradient></defs>
         <g fill="url(#bgG)">
           <g>
+            <!-- 12 teeth -->
             <rect x="-6" y="-46" width="12" height="18" rx="2" transform="rotate(0)"/>
             <rect x="-6" y="-46" width="12" height="18" rx="2" transform="rotate(30)"/>
             <rect x="-6" y="-46" width="12" height="18" rx="2" transform="rotate(60)"/>
@@ -151,6 +139,7 @@
         <defs><linearGradient id="bgG2" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--gearB1)"/><stop offset="1" stop-color="var(--gearB2)"/></linearGradient></defs>
         <g fill="url(#bgG2)">
           <g>
+            <!-- 12 teeth -->
             <rect x="-5" y="-42" width="10" height="16" rx="2" transform="rotate(0)"/>
             <rect x="-5" y="-42" width="10" height="16" rx="2" transform="rotate(30)"/>
             <rect x="-5" y="-42" width="10" height="16" rx="2" transform="rotate(60)"/>
@@ -173,36 +162,31 @@
   <div class="layout">
     <section>
       <div class="grid">
-        <!-- コード提出所：直接アップロードのみ -->
-        <a class="card rivets" href="https://github.com/mixyuki/team-lab-portal/upload/main/" target="_blank" rel="noopener">
+        <a class="card" href="https://github.com/mixyuki/team-lab-portal/upload/main/" target="_blank" rel="noopener">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a1 1 0 0 1 1 1v8h3l-4 4-4-4h3V3a1 1 0 0 1 1-1Zm-7 14h14v2H5v-2Zm0 4h14v2H5v-2Z"/></svg>
           <h3>コード提出所（直接アップロード）</h3>
           <p>ドラッグ＆ドロップでファイルを追加。ブランチは <code class="inline">main</code> にアップロードされます。</p>
         </a>
 
-        <!-- 質問所 -->
-        <a class="card rivets" href="https://github.com/mixyuki/team-lab-portal/issues/new?template=question.yml&labels=question&title=%5B%E8%B3%AA%E5%95%8F%5D%20" target="_blank" rel="noopener">
+        <a class="card" href="https://github.com/mixyuki/team-lab-portal/issues/new?template=question.yml&labels=question&title=%5B%E8%B3%AA%E5%95%8F%5D%20" target="_blank" rel="noopener">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2C7.58 2 4 5.13 4 9c0 2.12 1.21 4 3.08 5.22-.09.64-.39 1.85-1.35 3.08 0 0 2.02.05 3.5-1.02.87.24 1.79.37 2.77.37 4.42 0 8-3.13 8-7s-3.58-7-8-7Zm-1 14h2v2h-2v-2Zm1-10a3 3 0 0 1 3 3c0 1.66-1 2.5-2 3s-1 1-1 2h-2c0-1.66 1-2.5 2-3s1-1 1-2a1 1 0 1 0-2 0H9a3 3 0 0 1 3-3Z"/></svg>
           <h3>質問所</h3>
           <p>Issueフォームで投稿。タイトルは <code class="inline">[質問]</code> が最初から入ります。</p>
         </a>
 
-        <!-- ひな形（Google Doc） -->
-        <a class="card rivets" href="https://docs.google.com/document/d/15iWvrL86NOksH4maCYUsMtmDxA-mzQuFaKK7sVM1A_U/edit?tab=t.0" target="_blank" rel="noopener">
+        <a class="card" href="https://docs.google.com/document/d/15iWvrL86NOksH4maCYUsMtmDxA-mzQuFaKK7sVM1A_U/edit?tab=t.0" target="_blank" rel="noopener">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm8 1v5h5"/></svg>
           <h3>提出書類ひな形置き場</h3>
           <p>Googleドキュメントの公式ひな形。リポジトリ版は <code class="inline">/templates</code>。</p>
         </a>
 
-        <!-- 仕様書 -->
-        <a class="card rivets" href="https://github.com/mixyuki/team-lab-portal/blob/main/docs/spec.md" target="_blank" rel="noopener">
+        <a class="card" href="https://github.com/mixyuki/team-lab-portal/blob/main/docs/spec.md" target="_blank" rel="noopener">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 6h16v2H4V6Zm0 4h16v10H4V10Zm2 2v6h12v-6H6Z"/></svg>
           <h3>ゲーム仕様書</h3>
           <p>ステージ・操作・UI・役割・締切をここで管理。</p>
         </a>
 
-        <!-- ボード -->
-        <a class="card rivets" href="https://github.com/mixyuki/team-lab-portal/projects" target="_blank" rel="noopener">
+        <a class="card" href="https://github.com/mixyuki/team-lab-portal/projects" target="_blank" rel="noopener">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 4h18v2H3V4Zm0 4h8v12H3V8Zm10 0h8v12h-8V8Z"/></svg>
           <h3>進捗ボード</h3>
           <p>GitHub Projects（Todo / Doing / Done）。</p>
@@ -211,14 +195,14 @@
     </section>
 
     <aside>
-      <div class="widget rivets" id="calWidget">
+      <div class="widget" id="calWidget">
         <h3>締切カレンダー</h3>
         <div class="tools"><button class="btn" onclick="downloadICS()">ICSをダウンロード</button></div>
         <div class="small" id="calInfo">リポジトリ直下の <code class="inline">deadlines.json</code> を読み込みます。</div>
         <div id="calList" class="list" aria-live="polite" style="margin-top:8px"></div>
       </div>
 
-      <div class="widget rivets" id="noticeWidget">
+      <div class="widget" id="noticeWidget">
         <h3>告知</h3>
         <div class="small" id="noticeInfo">重要なお知らせを掲載。</div>
         <div id="noticeList" class="list" style="margin-top:8px"></div>
@@ -226,16 +210,12 @@
     </aside>
   </div>
 
-  <footer>
-    セットアップ：<code class="inline">index.html</code> をリポジトリ直下に配置し、GitHub Pages を有効化。<br/>
-    〆切は <code class="inline">deadlines.json</code>、告知は <code class="inline">announcements.json</code> を編集。
-  </footer>
+  <footer></footer>
 
   <script>
-    /* ====== Many Gears in Header (no noise) ====== */
+    /* ====== Many Gears in Header ====== */
     const field = document.getElementById('gearfield');
     const gears = [
-      // x, y, size, speed, reverse, opacity (ヘッダー幅1200px前提でざっくり配置)
       {x:-30,  y:-40, size:'big',  speed:'slow'},
       {x:140,  y:-20, size:'mid',  speed:'med',  reverse:true},
       {x:320,  y:-60, size:'big',  speed:'slow', reverse:true, opacity:.2},
@@ -249,43 +229,27 @@
       {x:860,  y: 60, size:'small',speed:'fast'},
       {x:1060, y: 70, size:'small',speed:'fast', reverse:true}
     ];
-
     const gearSVG = (type)=> {
       if(type==='big') return `
         <svg viewBox="-50 -50 100 100" width="220" height="220" aria-hidden="true">
           <defs><linearGradient id="gA" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--gearA1)"/><stop offset="1" stop-color="var(--gearA2)"/></linearGradient></defs>
-          <g fill="url(#gA)">
-            ${teeth(12,46,12,18,6)}
-            <circle r="38"/><circle r="24" fill="#7d5d2a"/><circle r="9" fill="#0e0c09"/>
-          </g>
+          <g fill="url(#gA)">${teeth(12,46,12,18,6)}<circle r="38"/><circle r="24" fill="#7d5d2a"/><circle r="9" fill="#0e0c09"/></g>
         </svg>`;
       if(type==='mid') return `
         <svg viewBox="-50 -50 100 100" width="150" height="150" aria-hidden="true">
           <defs><linearGradient id="gB" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--gearB1)"/><stop offset="1" stop-color="var(--gearB2)"/></linearGradient></defs>
-          <g fill="url(#gB)">
-            ${teeth(12,42,10,16,5)}
-            <circle r="32"/><circle r="18" fill="#6a4f24"/><circle r="7" fill="#0e0c09"/>
-          </g>
+          <g fill="url(#gB)">${teeth(12,42,10,16,5)}<circle r="32"/><circle r="18" fill="#6a4f24"/><circle r="7" fill="#0e0c09"/></g>
         </svg>`;
       return `
         <svg viewBox="-50 -50 100 100" width="90" height="90" aria-hidden="true">
-          <g fill="var(--gearA1)">
-            ${teeth(12,36,8,14,4)}
-            <circle r="26"/><circle r="14" fill="#6a4f24"/><circle r="6" fill="#0e0c09"/>
-          </g>
+          <g fill="var(--gearA1)">${teeth(12,36,8,14,4)}<circle r="26"/><circle r="14" fill="#6a4f24"/><circle r="6" fill="#0e0c09"/></g>
         </svg>`;
     };
-
-    /* 歯車の歯（長方形）を角度を変えて配置 */
     function teeth(count, rY, w, h, rx){
-      const step = 360 / count;
-      let s = '';
-      for(let i=0;i<count;i++){
-        s += `<rect x="${-w/2}" y="${-rY}" width="${w}" height="${h}" rx="${rx}" transform="rotate(${i*step})"/>`;
-      }
+      const step = 360 / count; let s = '';
+      for(let i=0;i<count;i++){ s += `<rect x="${-w/2}" y="${-rY}" width="${w}" height="${h}" rx="${rx}" transform="rotate(${i*step})"/>`; }
       return s;
     }
-
     function addGear(g){
       const d = document.createElement('div');
       d.className = `gear ${g.size} spin-${g.speed}` + (g.reverse?' reverse':'');
