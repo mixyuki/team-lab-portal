@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>チームLAB | Project Portal</title>
+  <meta name="description" content="p5.jsグループワーク用の提出・質問・テンプレ・仕様書・締切・告知のポータル" />
+  <style>
+    :root{
+      --bg:#0e0d0b;
+      --bg2:#14110c;
+      --panel:#1f1a12;
+      --panel-hi:#2a2418;
+      --text:#f3e7d0;
+      --muted:#b79e7a;
+      --accent:#f1d18a;
+      --brass1:#f0d08a;
+      --brass2:#b4823e;
+      --brass3:#7a5526;
+      --shadow:rgba(0,0,0,.45);
+      --line:#3b301f;
+      --ok:#7fc97f;
+      --warn:#f1b04c;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+      background:
+        radial-gradient(1400px 900px at 12% 0%, #1a1712 0%, var(--bg2) 60%, #0a0907 100%);
+    }
+
+    /* ===== Header with gears ===== */
+    header{ position:relative; padding:56px 20px 26px; }
+    .brand{
+      display:inline-block; padding:14px 22px;
+      font-weight:800; font-size:26px; letter-spacing:.12em; text-transform:uppercase;
+      color:var(--text);
+      border:1px solid rgba(202,160,90,.6);
+      background:linear-gradient(180deg, rgba(54,46,32,.85), rgba(30,26,18,.85));
+      border-radius:12px;
+      box-shadow:
+        0 10px 30px var(--shadow),
+        inset 0 1px 0 rgba(255,255,255,.06),
+        inset 0 -1px 0 rgba(0,0,0,.4);
+      position:relative; z-index:2;
+    }
+    .tagline{ margin-top:8px; color:var(--muted); font-size:13px; position:relative; z-index:2; }
+
+    .gearfield{
+      position:absolute; inset:0; pointer-events:none; overflow:hidden;
+      z-index:1; /* behind title, in front of background */
+    }
+    .gear{ position:absolute; opacity:.28; filter:drop-shadow(0 6px 10px rgba(0,0,0,.5)); }
+    .gear.small{ width:90px; height:90px; opacity:.35; }
+    .gear.mid{ width:150px; height:150px; }
+    .gear.big{ width:220px; height:220px; opacity:.20; }
+    .spin-slow{ animation:spin 40s linear infinite; }
+    .spin-med{  animation:spin 24s linear infinite; }
+    .spin-fast{ animation:spin 12s linear infinite; }
+    .reverse{ animation-direction:reverse; }
+    @keyframes spin{ to{ transform:rotate(360deg); } }
+
+    /* ===== Layout ===== */
+    .layout{ max-width:1200px; margin:0 auto; padding:10px 20px 60px; display:grid; gap:22px;
+      grid-template-columns: 1fr 360px; align-items:start; }
+    @media (max-width: 980px){
+      .layout{ grid-template-columns: 1fr; }
+      aside{ position:static; top:auto; }
+    }
+
+    /* Left content */
+    .grid{ display:grid; gap:18px; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); }
+    a.card, .card{
+      position:relative; display:block; text-decoration:none; color:var(--text);
+      background:
+        linear-gradient(180deg, var(--panel-hi), var(--panel));
+      border:1px solid rgba(202,160,90,.35);
+      border-radius:16px; padding:18px;
+      box-shadow:0 10px 24px var(--shadow), inset 0 1px 0 rgba(255,255,255,.04);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .card:hover{ transform:translateY(-2px); box-shadow:0 18px 36px var(--shadow); border-color:rgba(202,160,90,.6); }
+    .card .icon{ width:40px; height:40px; margin-bottom:10px; opacity:.95; }
+    .card h3{ margin:6px 0 8px; font-size:18px; }
+    .card p{ margin:0; color:var(--muted); font-size:13px; line-height:1.6; }
+    .rivets::before, .rivets::after{
+      content:""; position:absolute; inset:0; pointer-events:none;
+      background:
+        radial-gradient(circle at 14px 14px, #e0c07a 0 5px, #7a5a2b 6px 7px, transparent 8px) top left,
+        radial-gradient(circle at calc(100% - 14px) 14px, #e0c07a 0 5px, #7a5a2b 6px 7px, transparent 8px) top right,
+        radial-gradient(circle at 14px calc(100% - 14px), #e0c07a 0 5px, #7a5a2b 6px 7px, transparent 8px) bottom left,
+        radial-gradient(circle at calc(100% - 14px) calc(100% - 14px), #e0c07a 0 5px, #7a5a2b 6px 7px, transparent 8px) bottom right;
+      background-repeat:no-repeat; background-size: 16px 16px;
+    }
+
+    /* Sidebar */
+    aside{ position:sticky; top:16px; align-self:start; }
+    .widget{
+      background:linear-gradient(180deg, #2a2418, #1f1a12);
+      border:1px solid rgba(202,160,90,.45);
+      border-radius:16px; padding:16px; margin-bottom:16px;
+      box-shadow:0 14px 26px var(--shadow), inset 0 1px 0 rgba(255,255,255,.04);
+      position:relative;
+    }
+    .widget h3{ margin:0 0 10px; font-size:16px; display:flex; align-items:center; gap:8px; }
+    .widget .small{ color:var(--muted); font-size:12px; }
+    .widget .tools{ display:flex; gap:8px; flex-wrap:wrap; margin:6px 0 10px; }
+    .btn{ appearance:none; border:1px solid rgba(202,160,90,.6); background:linear-gradient(#3a301f,#2a2317); color:var(--text); border-radius:10px; padding:6px 10px; cursor:pointer; font-size:12px;}
+    .btn:hover{ filter:brightness(1.06); }
+    .kv{ display:flex; gap:8px; line-height:1.3; }
+    .list{ display:grid; gap:8px; }
+    .item{ background:#1b1710; border:1px solid rgba(202,160,90,.35); border-radius:10px; padding:10px; display:grid; gap:4px; }
+    .date{ font-weight:700; color:var(--accent); font-size:13px; }
+    .title{ font-size:14px; }
+    .note{ color:var(--muted); font-size:12px; }
+
+    .notice .item{ border-color:#6e5a32; }
+    .notice .badge{ display:inline-block; font-size:10px; padding:2px 6px; border-radius:999px; background:linear-gradient(#e2c276,#c4984e); color:#231a0e; margin-right:6px; }
+
+    /* Decorative seam line */
+    .seam{
+      height:14px; margin:16px 0 8px; position:relative;
+      background: linear-gradient(180deg, #3b2f1d, #231a0e);
+      border:1px solid #120e08; border-radius:999px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.4);
+    }
+    .seam::before, .seam::after{
+      content:""; position:absolute; inset:0; background:
+        radial-gradient(circle, #e0c07a 0 2px, #6e5225 3px 4px, transparent 5px) 12px 50% / 32px 10px repeat-x;
+      opacity:.9;
+    }
+
+    footer{ max-width:1200px; margin:10px auto 60px; padding:0 20px; color:var(--muted); font-size:12px }
+    code.inline{ background:#00000033; padding:.15em .4em; border-radius:6px; border:1px solid #00000055 }
+
+    @media (prefers-reduced-motion: reduce){
+      .spin-slow,.spin-med,.spin-fast{ animation:none }
+    }
+  </style>
+</head>
+<body>
+  <!-- Subtle brass noise filter -->
+  <svg width="0" height="0" style="position:absolute">
+    <filter id="metalNoise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="8" />
+      <feColorMatrix type="saturate" values="0.2"/>
+      <feBlend mode="multiply"/>
+    </filter>
+  </svg>
+
+  <header>
+    <div class="gearfield" aria-hidden="true">
+      <div class="gear big spin-slow" style="left:-30px; top:-40px">
+        <svg viewBox="-50 -50 100 100" width="220" height="220">
+          <defs>
+            <linearGradient id="brassA" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#f3d590"/>
+              <stop offset="1" stop-color="#a37a3a"/>
+            </linearGradient>
+          </defs>
+          <g fill="url(#brassA)" filter="url(#metalNoise)">
+            <g>
+              <rect x="-6" y="-46" width="12" height="18" rx="2" transform="rotate(0)"/>
+              <rect x="-6" y="-46" width="12" height="18" rx="2" transform="rotate(30)"/>
+              <rect x="-6" y="-46" width="12" height="18" rx="2" transform="rotate(60)"/>
+              <rect x="-6" y="-46" width="12" height="18" rx="2" transform="rotate(90)"/>
+              <rect x="-6" y="-46" width="12" height="18" rx="2" transform="rotate(120)"/>
+              <rect x="-6" y="-46" width="12" height="18" rx="2" transform="rotate(150)"/>
+              <rect x="-6" y="-46" width="12" height="18" rx="2" transform="rotate(180)"/>
+              <rect x="-6" y="-46" width="12" height="18" rx="2" transform="rotate(210)"/>
+              <rect x="-6" y="-46" width="12" height="18" rx="2" transform="rotate(240)"/>
+              <rect x="-6" y="-46" width="12" height="18" rx="2" transform="rotate(270)"/>
+              <rect x="-6" y="-46" width="12" height="18" rx="2" transform="rotate(300)"/>
+              <rect x="-6" y="-46" width="12" height="18" rx="2" transform="rotate(330)"/>
+            </g>
+            <circle r="38"/>
+            <circle r="24" fill="#7d5d2a"/>
+            <circle r="9" fill="#0e0c09"/>
+          </g>
+        </svg>
+      </div>
+      <div class="gear mid spin-med" style="right:30px; top:-10px">
+        <svg viewBox="-50 -50 100 100" width="150" height="150">
+          <defs>
+            <linearGradient id="brassB" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#eaca88"/>
+              <stop offset="1" stop-color="#b6843f"/>
+            </linearGradient>
+          </defs>
+          <g fill="url(#brassB)" filter="url(#metalNoise)">
+            <g>
+              <rect x="-5" y="-42" width="10" height="16" rx="2" transform="rotate(0)"/>
+              <rect x="-5" y="-42" width="10" height="16" rx="2" transform="rotate(30)"/>
+              <rect x="-5" y="-42" width="10" height="16" rx="2" transform="rotate(60)"/>
+              <rect x="-5" y="-42" width="10" height="16" rx="2" transform="rotate(90)"/>
+              <rect x="-5" y="-42" width="10" height="16" rx="2" transform="rotate(120)"/>
+              <rect x="-5" y="-42" width="10" height="16" rx="2" transform="rotate(150)"/>
+              <rect x="-5" y="-42" width="10" height="16" rx="2" transform="rotate(180)"/>
+              <rect x="-5" y="-42" width="10" height="16" rx="2" transform="rotate(210)"/>
+              <rect x="-5" y="-42" width="10" height="16" rx="2" transform="rotate(240)"/>
+              <rect x="-5" y="-42" width="10" height="16" rx="2" transform="rotate(270)"/>
+              <rect x="-5" y="-42" width="10" height="16" rx="2" transform="rotate(300)"/>
+              <rect x="-5" y="-42" width="10" height="16" rx="2" transform="rotate(330)"/>
+            </g>
+            <circle r="32"/>
+            <circle r="18" fill="#6a4f24"/>
+            <circle r="7" fill="#0e0c09"/>
+          </g>
+        </svg>
+      </div>
+      <div class="gear small spin-fast reverse" style="left:40px; bottom:-10px">
+        <svg viewBox="-50 -50 100 100" width="90" height="90">
+          <g fill="#d8b06b" filter="url(#metalNoise)">
+            <g>
+              <rect x="-4" y="-36" width="8" height="14" rx="2" transform="rotate(0)"/>
+              <rect x="-4" y="-36" width="8" height="14" rx="2" transform="rotate(30)"/>
+              <rect x="-4" y="-36" width="8" height="14" rx="2" transform="rotate(60)"/>
+              <rect x="-4" y="-36" width="8" height="14" rx="2" transform="rotate(90)"/>
+              <rect x="-4" y="-36" width="8" height="14" rx="2" transform="rotate(120)"/>
+              <rect x="-4" y="-36" width="8" height="14" rx="2" transform="rotate(150)"/>
+              <rect x="-4" y="-36" width="8" height="14" rx="2" transform="rotate(180)"/>
+              <rect x="-4" y="-36" width="8" height="14" rx="2" transform="rotate(210)"/>
+              <rect x="-4" y="-36" width="8" height="14" rx="2" transform="rotate(240)"/>
+              <rect x="-4" y="-36" width="8" height="14" rx="2" transform="rotate(270)"/>
+              <rect x="-4" y="-36" width="8" height="14" rx="2" transform="rotate(300)"/>
+              <rect x="-4" y="-36" width="8" height="14" rx="2" transform="rotate(330)"/>
+            </g>
+            <circle r="26"/>
+            <circle r="14" fill="#6a4f24"/>
+            <circle r="6" fill="#0e0c09"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="brand">チームLAB</div>
+    <div class="tagline">p5.js グループワーク向け・提出＆連絡ポータル</div>
+  </header>
+
+  <div class="layout">
+    <section>
+      <div class="grid">
+        <!-- コード提出所：直接アップロードのみ -->
+        <a class="card rivets" href="https://github.com/mixyuki/team-lab-portal/upload/main/" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M12 2a1 1 0 0 1 1 1v8h3l-4 4-4-4h3V3a1 1 0 0 1 1-1Zm-7 14h14v2H5v-2Zm0 4h14v2H5v-2Z"/>
+          </svg>
+          <h3>コード提出所（直接アップロード）</h3>
+          <p>ドラッグ＆ドロップでファイルを追加。ブランチは <code class="inline">main</code> にアップロードされます。</p>
+        </a>
+
+        <!-- 質問所：Issue Form -->
+        <a class="card rivets" href="https://github.com/mixyuki/team-lab-portal/issues/new?template=question.yml&labels=question&title=%5B%E8%B3%AA%E5%95%8F%5D%20" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M12 2C7.58 2 4 5.13 4 9c0 2.12 1.21 4 3.08 5.22-.09.64-.39 1.85-1.35 3.08 0 0 2.02.05 3.5-1.02.87.24 1.79.37 2.77.37 4.42 0 8-3.13 8-7s-3.58-7-8-7Zm-1 14h2v2h-2v-2Zm1-10a3 3 0 0 1 3 3c0 1.66-1 2.5-2 3s-1 1-1 2h-2c0-1.66 1-2.5 2-3s1-1 1-2a1 1 0 1 0-2 0H9a3 3 0 0 1 3-3Z"/>
+          </svg>
+          <h3>質問所</h3>
+          <p>Issueフォームで投稿。タイトルは <code class="inline">[質問]</code> が最初から入ります。</p>
+        </a>
+
+        <!-- ひな形（Google Doc） -->
+        <a class="card rivets" href="https://docs.google.com/document/d/15iWvrL86NOksH4maCYUsMtmDxA-mzQuFaKK7sVM1A_U/edit?tab=t.0" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm8 1v5h5"/>
+          </svg>
+          <h3>提出書類ひな形置き場</h3>
+          <p>Googleドキュメントの公式ひな形。リポジトリ版は <code class="inline">/templates</code>。</p>
+        </a>
+
+        <!-- 仕様書 -->
+        <a class="card rivets" href="https://github.com/mixyuki/team-lab-portal/blob/main/docs/spec.md" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M4 6h16v2H4V6Zm0 4h16v10H4V10Zm2 2v6h12v-6H6Z"/>
+          </svg>
+          <h3>ゲーム仕様書</h3>
+          <p>ステージ・操作・UI・役割・締切をここで管理。</p>
+        </a>
+
+        <!-- ボード -->
+        <a class="card rivets" href="https://github.com/mixyuki/team-lab-portal/projects" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M3 4h18v2H3V4Zm0 4h8v12H3V8Zm10 0h8v12h-8V8Z"/>
+          </svg>
+          <h3>進捗ボード</h3>
+          <p>GitHub Projects（Todo / Doing / Done）。</p>
+        </a>
+      </div>
+      <div class="seam" aria-hidden="true"></div>
+    </section>
+
+    <aside>
+      <!-- Calendar Widget -->
+      <div class="widget rivets" id="calWidget">
+        <h3>締切カレンダー</h3>
+        <div class="tools">
+          <button class="btn" onclick="downloadICS()">ICSをダウンロード</button>
+        </div>
+        <div class="small" id="calInfo">リポジトリ直下の <code class="inline">deadlines.json</code> を読み込みます。</div>
+        <div id="calList" class="list" aria-live="polite" style="margin-top:8px"></div>
+      </div>
+
+      <!-- Notice Widget -->
+      <div class="widget notice rivets" id="noticeWidget">
+        <h3>告知</h3>
+        <div class="small" id="noticeInfo">重要なお知らせを掲載。</div>
+        <div id="noticeList" class="list" style="margin-top:8px"></div>
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    セットアップ：<code class="inline">index.html</code> をリポジトリ直下に配置し、GitHub Pages を有効化。<br/>
+    〆切は <code class="inline">deadlines.json</code> を編集、告知は <code class="inline">announcements.json</code> を編集。
+  </footer>
+
+  <script>
+    // ===== Calendar =====
+    const calList = document.getElementById('calList');
+    const calInfo = document.getElementById('calInfo');
+    let calendarEvents = [];
+
+    async function loadDeadlines(){
+      calList.innerHTML = '<div class="item"><div>読み込み中…</div></div>';
+      try{
+        const res = await fetch('./deadlines.json', { cache:'no-store' });
+        if(!res.ok) throw new Error('not ok');
+        const data = await res.json();
+        calendarEvents = (data||[]).filter(e=>e.date).map((e,i)=>({
+          id:e.id||('ev-'+i), title:e.title||'Untitled', date:e.date, time:e.time||null, note:e.note||''
+        }));
+        calInfo.textContent = 'deadlines.json から読み込みました。';
+      }catch(err){
+        calendarEvents = [
+          {"id":"proto","title":"プロトタイプ提出","date":"2025-11-01","time":"17:00","note":"チームごとにPR"},
+          {"id":"qa","title":"テスト＆QA","date":"2025-11-15","time":"23:59","note":"バグ報告締切"},
+          {"id":"final","title":"最終発表","date":"2025-12-05","time":"10:00","note":"A教室"}
+        ];
+        calInfo.innerHTML = 'deadlines.json が見つからないため <strong>サンプル</strong> を表示しています。';
+      }
+      calendarEvents.sort((a,b)=> new Date(a.date + 'T' + (a.time||'00:00')) - new Date(b.date + 'T' + (b.time||'00:00')));
+      calList.innerHTML = calendarEvents.map(e=>{
+        const d = new Date(e.date + 'T' + (e.time||'00:00'));
+        const mm = String(d.getMonth()+1).padStart(2,'0');
+        const dd = String(d.getDate()).padStart(2,'0');
+        const w = ['日','月','火','水','木','金','土'][d.getDay()];
+        const label = `${d.getFullYear()}/${mm}/${dd}(${w})` + (e.time? ` ${e.time}`:'');
+        return `<div class="item"><div class="date">${label}</div><div class="title">${escapeHtml(e.title)}</div><div class="note">${escapeHtml(e.note)}</div></div>`;
+      }).join('');
+    }
+
+    function escapeHtml(s){ return (s||'').replace(/[&<>\"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\\":"&#92;","\"":"&quot;","'":"&#39;"}[c])); }
+
+    function toICSDate(dateStr,timeStr){
+      if(!timeStr) return dateStr.replace(/-/g,'');
+      const [y,m,d] = dateStr.split('-'); const [hh,mm] = timeStr.split(':');
+      return `${y}${m}${d}T${hh}${mm}00`;
+    }
+    function downloadICS(){
+      const lines = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Team LAB//Deadlines//JP'];
+      (calendarEvents||[]).filter(e=>e.date).forEach(e=>{
+        const uid = (e.id||e.title||'ev') + '@team-lab';
+        const dtstart = toICSDate(e.date, e.time);
+        lines.push('BEGIN:VEVENT');
+        if(e.time) lines.push(`DTSTART:${dtstart}`); else lines.push(`DTSTART;VALUE=DATE:${dtstart}`);
+        lines.push(`SUMMARY:${(e.title||'Deadline').replace(/\n/g,' ')}`);
+        if(e.note) lines.push(`DESCRIPTION:${e.note.replace(/\n/g,' ')}`);
+        lines.push(`UID:${uid}`,'END:VEVENT');
+      });
+      lines.push('END:VCALENDAR');
+      const blob = new Blob([lines.join('\r\n')], {type:'text/calendar'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = 'deadlines.ics'; a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    // ===== Notices =====
+    const noticeList = document.getElementById('noticeList');
+    const noticeInfo = document.getElementById('noticeInfo');
+
+    async function loadNotices(){
+      noticeList.innerHTML = '<div class="item"><div>読み込み中…</div></div>';
+      try{
+        const res = await fetch('./announcements.json', { cache:'no-store' });
+        if(!res.ok) throw new Error('not ok');
+        const data = await res.json();
+        renderNotices(Array.isArray(data)? data : []);
+        noticeInfo.textContent = 'announcements.json から読み込みました。';
+      }catch(err){
+        const fallback = [
+          {"date":"2025-10-20","title":"素材提出のお願い","body":"画像はPNGで背景透過、サイズは512px四方に揃えてください。","tag":"Info"},
+          {"date":"2025-10-25","title":"ミーティング","body":"次回定例は 10/25 19:00-（A教室／オンライン併用）。","tag":"Schedule"}
+        ];
+        renderNotices(fallback);
+        noticeInfo.innerHTML = 'announcements.json が見つからないため <strong>サンプル</strong> を表示しています。';
+      }
+    }
+    function renderNotices(list){
+      list.sort((a,b)=> new Date(b.date) - new Date(a.date));
+      noticeList.innerHTML = list.map(n=>{
+        const d = new Date(n.date);
+        const mm = String(d.getMonth()+1).padStart(2,'0');
+        const dd = String(d.getDate()).padStart(2,'0');
+        const date = `${d.getFullYear()}/${mm}/${dd}`;
+        const tag = n.tag? `<span class="badge">${escapeHtml(n.tag)}</span>` : '';
+        return `<div class="item"><div class="date">${date}</div><div class="title">${tag}${escapeHtml(n.title||'')}</div><div class="note">${escapeHtml(n.body||'')}</div></div>`;
+      }).join('');
+    }
+
+    // init
+    document.addEventListener('DOMContentLoaded', ()=>{
+      loadDeadlines();
+      loadNotices();
+    });
+  </script>
+</body>
+</html>
