@@ -162,31 +162,54 @@
   <div class="layout">
     <section>
       <div class="grid">
-        <a class="card" href="https://github.com/mixyuki/team-lab-portal/upload/main/" target="_blank" rel="noopener">
+        <a class="card" href="https://github.com/mixyuki/team-lab-portal/upload/main/" target="_blank" rel="noopener" aria-label="コード提出所（直接アップロード）を開く">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a1 1 0 0 1 1 1v8h3l-4 4-4-4h3V3a1 1 0 0 1 1-1Zm-7 14h14v2H5v-2Zm0 4h14v2H5v-2Z"/></svg>
           <h3>コード提出所（直接アップロード）</h3>
           <p>ドラッグ＆ドロップでファイルを追加。ブランチは <code class="inline">main</code> にアップロードされます。</p>
         </a>
 
-        <a class="card" href="https://github.com/mixyuki/team-lab-portal/issues/new?template=question.yml&labels=question&title=%5B%E8%B3%AA%E5%95%8F%5D%20" target="_blank" rel="noopener">
+        <a class="card" href="https://github.com/mixyuki/team-lab-portal/issues/new?template=question.yml&labels=question&title=%5B%E8%B3%AA%E5%95%8F%5D%20" target="_blank" rel="noopener" aria-label="質問所を開く">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2C7.58 2 4 5.13 4 9c0 2.12 1.21 4 3.08 5.22-.09.64-.39 1.85-1.35 3.08 0 0 2.02.05 3.5-1.02.87.24 1.79.37 2.77.37 4.42 0 8-3.13 8-7s-3.58-7-8-7Zm-1 14h2v2h-2v-2Zm1-10a3 3 0 0 1 3 3c0 1.66-1 2.5-2 3s-1 1-1 2h-2c0-1.66 1-2.5 2-3s1-1 1-2a1 1 0 1 0-2 0H9a3 3 0 0 1 3-3Z"/></svg>
           <h3>質問所</h3>
           <p>Issueフォームで投稿。タイトルは <code class="inline">[質問]</code> が最初から入ります。</p>
         </a>
 
-        <a class="card" href="https://docs.google.com/document/d/15iWvrL86NOksH4maCYUsMtmDxA-mzQuFaKK7sVM1A_U/edit?tab=t.0" target="_blank" rel="noopener">
+        <!-- ▼ 追加：内田さんスライド -->
+        <a class="card" href="https://docs.google.com/presentation/d/1fWPjOryjAAWAW_Dpzgfq15F4uCYXzzfu7d25auBewPc/edit?usp=sharing" target="_blank" rel="noopener" aria-label="内田さんのスライドを開く">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M3 4h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/>
+            <path fill="currentColor" d="M2 18h20v2H2zM11 20h2v2h-2z"/>
+            <path fill="#0e0c09" d="M10 8v6l5-3-5-3z"/>
+          </svg>
+          <h3>内田さんのスライド</h3>
+          <p>Googleスライドを開きます（新しいタブ）。</p>
+        </a>
+
+        <!-- ▼ 追加：福本さんスライド -->
+        <a class="card" href="https://docs.google.com/presentation/d/1_zlUtozRwqlBZOe75tpm1K6kZa2xj6we9o1xxARpk0w/edit?usp=sharing" target="_blank" rel="noopener" aria-label="福本さんのスライドを開く">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M3 4h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/>
+            <path fill="currentColor" d="M2 18h20v2H2zM11 20h2v2h-2z"/>
+            <path fill="#0e0c09" d="M10 8v6l5-3-5-3z"/>
+          </svg>
+          <h3>福本さんのスライド</h3>
+          <p>Googleスライドを開きます（新しいタブ）。</p>
+        </a>
+        <!-- ▲ 追加ここまで -->
+
+        <a class="card" href="https://docs.google.com/document/d/15iWvrL86NOksH4maCYUsMtmDxA-mzQuFaKK7sVM1A_U/edit?tab=t.0" target="_blank" rel="noopener" aria-label="提出書類ひな形置き場を開く">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm8 1v5h5"/></svg>
           <h3>提出書類ひな形置き場</h3>
           <p>Googleドキュメントの公式ひな形。リポジトリ版は <code class="inline">/templates</code>。</p>
         </a>
 
-        <a class="card" href="https://github.com/mixyuki/team-lab-portal/blob/main/docs/spec.md" target="_blank" rel="noopener">
+        <a class="card" href="https://github.com/mixyuki/team-lab-portal/blob/main/docs/spec.md" target="_blank" rel="noopener" aria-label="ゲーム仕様書を開く">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 6h16v2H4V6Zm0 4h16v10H4V10Zm2 2v6h12v-6H6Z"/></svg>
           <h3>ゲーム仕様書</h3>
           <p>ステージ・操作・UI・役割・締切をここで管理。</p>
         </a>
 
-        <a class="card" href="https://github.com/mixyuki/team-lab-portal/projects" target="_blank" rel="noopener">
+        <a class="card" href="https://github.com/mixyuki/team-lab-portal/projects" target="_blank" rel="noopener" aria-label="進捗ボードを開く">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 4h18v2H3V4Zm0 4h8v12H3V8Zm10 0h8v12h-8V8Z"/></svg>
           <h3>進捗ボード</h3>
           <p>GitHub Projects（Todo / Doing / Done）。</p>
@@ -292,7 +315,8 @@
       }).join('');
     }
 
-    function escapeHtml(s){ return (s||'').replace(/[&<>\"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\\":"&#92;","\"":"&quot;","'":"&#39;"}[c])); }
+    function escapeHtml(s){ return (s||'').replace(/[&<>\"']/g, c=>({"&":"&amp;","<":"&lt;",
+">":"&gt;","\\":"&#92;","\"":"&quot;","'":"&#39;"}[c])); }
     function toICSDate(dateStr,timeStr){ if(!timeStr) return dateStr.replace(/-/g,''); const [y,m,d]=dateStr.split('-'); const [hh,mm]=timeStr.split(':'); return `${y}${m}${d}T${hh}${mm}00`; }
     function downloadICS(){
       const lines = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Team LAB//Deadlines//JP'];
