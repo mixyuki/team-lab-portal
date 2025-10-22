@@ -1,23 +1,5 @@
 # team-lab-portal
 
 p5.js グループワーク向けの **提出・質問・テンプレ・仕様書・締切・告知** ポータル。
-
-## 🔗 Live & Repo
-
 - **公開サイト**  
   https://mixyuki.github.io/team-lab-portal/
-
-## ⚡ クイックリンク
-
-- **コード提出所（直接アップロード）**  
-  https://github.com/mixyuki/team-lab-portal/upload/main/
-- **質問所（Issue フォーム / タイトルに `[質問]` をプリセット）**  
-  https://github.com/mixyuki/team-lab-portal/issues/new?template=question.yml&labels=question&title=%5B%E8%B3%AA%E5%95%8F%5D%20
-- **提出書類ひな形（Google ドキュメント）**  
-  https://docs.google.com/document/d/15iWvrL86NOksH4maCYUsMtmDxA-mzQuFaKK7sVM1A_U/edit?tab=t.0
-- **リポジトリ内ひな形（/templates）**  
-  https://github.com/mixyuki/team-lab-portal/tree/main/templates
-- **ゲーム仕様書（/docs/spec.md）**  
-  https://github.com/mixyuki/team-lab-portal/blob/main/docs/spec.md
-- **進捗ボード（GitHub Projects）**  
-  https://github.com/mixyuki/team-lab-portal/projects
