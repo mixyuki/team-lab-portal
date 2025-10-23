@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>YouTube URL プレイヤー</title>
+  <style>
+    :root{
+      --bg:#0f1220; --panel:#171a2b; --text:#e8ecf2; --muted:#9aa3b2; --accent:#6aa9ff; --accent2:#9b7bff; --danger:#ff6a6a;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", sans-serif;
+      color:var(--text); background: radial-gradient(80vw 80vh at 10% -10%, #1c2040, transparent),
+                          radial-gradient(70vw 70vh at 110% 10%, #102132, transparent), var(--bg);
+    }
+    .wrap{max-width:980px; margin:32px auto; padding:0 16px}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px; padding:20px; box-shadow:0 8px 24px rgba(0,0,0,.35);
+      backdrop-filter: blur(8px);
+    }
+    h1{margin:0 0 12px; font-size:clamp(20px, 2.6vw, 28px); letter-spacing:.02em}
+    p.desc{margin:0 0 16px; color:var(--muted); font-size:14px}
+    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    input[type="url"]{
+      flex:1 1 520px; min-width:220px; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.12);
+      background:#0f1326; color:var(--text); outline:none; transition:.15s border-color, .15s box-shadow;
+    }
+    input[type="url"]:focus{border-color:var(--accent); box-shadow:0 0 0 3px rgba(106,169,255,.25)}
+    button{
+      cursor:pointer; padding:12px 16px; border:none; border-radius:12px; font-weight:600; letter-spacing:.02em;
+      background:linear-gradient(135deg, var(--accent), var(--accent2)); color:white; transition:transform .05s ease;
+    }
+    button:active{transform:translateY(1px)}
+    .hint{font-size:12px; color:var(--muted); margin-top:8px}
+    .error{color:var(--danger); margin-top:8px; font-weight:600}
+
+    .player{margin-top:16px; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,.12)}
+    .ratio{position:relative; width:100%; padding-top:56.25%}
+    .ratio iframe{position:absolute; inset:0; width:100%; height:100%; border:0}
+
+    .tools{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap}
+    .tools button, .tools a{
+      background:#222842; color:#e9edfa; border:1px solid rgba(255,255,255,.12); padding:8px 12px; border-radius:10px; text-decoration:none;
+    }
+    .thumb{margin-top:12px; display:flex; gap:12px; align-items:center}
+    .thumb img{width:120px; height:67px; object-fit:cover; border-radius:8px; border:1px solid rgba(255,255,255,.14)}
+    .xsmall{font-size:12px; color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>YouTube のURLを貼って再生</h1>
+      <p class="desc">watch / youtu.be / shorts / embed どれでもOK。<br>例: https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=43s</p>
+      <div class="row">
+        <input id="url" type="url" placeholder="https://youtu.be/......" spellcheck="false" />
+        <button id="playBtn" title="再生">再生</button>
+      </div>
+      <div class="hint">※ 一部の動画は<b>埋め込みを禁止</b>しており、再生できない場合があります。</div>
+      <div id="err" class="error" role="alert" aria-live="polite" style="display:none"></div>
+
+      <div id="thumb" class="thumb" style="display:none">
+        <img id="thumbImg" alt="サムネイル" />
+        <div>
+          <div class="xsmall" id="vidInfo"></div>
+          <div class="tools">
+            <a id="openYT" href="#" target="_blank" rel="noopener">YouTubeで開く</a>
+            <button id="copyEmbed">埋め込みURLをコピー</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="player" id="player" style="display:none">
+        <div class="ratio">
+          <iframe id="iframe" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen title="YouTube player"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id)=>document.getElementById(id);
+    const urlInput = $("url");
+    const playBtn = $("playBtn");
+    const iframe = $("iframe");
+    const player = $("player");
+    const err = $("err");
+    const thumbWrap = $("thumb");
+    const thumbImg = $("thumbImg");
+    const vidInfo = $("vidInfo");
+    const openYT = $("openYT");
+    const copyEmbed = $("copyEmbed");
+
+    // --- URL → videoId / start 秒 を抽出 ---
+    function parseYouTube(url){
+      try{
+        const u = new URL(url.trim());
+        if(!/youtube\.com|youtu\.be/.test(u.hostname)) return null;
+
+        let id = null;
+        // 1) youtu.be/<id>
+        if(u.hostname === 'youtu.be'){
+          id = u.pathname.split('/')[1] || null;
+        }
+        // 2) youtube.com/watch?v=<id>
+        if(!id && u.searchParams.get('v')){
+          id = u.searchParams.get('v');
+        }
+        // 3) youtube.com/shorts/<id>
+        if(!id && u.pathname.startsWith('/shorts/')){
+          id = u.pathname.split('/')[2] || u.pathname.split('/')[1];
+        }
+        // 4) youtube.com/embed/<id>
+        if(!id && u.pathname.startsWith('/embed/')){
+          id = u.pathname.split('/')[2];
+        }
+        // 正規化
+        if(id){
+          id = id.replace(/[^a-zA-Z0-9_-]/g, '');
+        }
+        // 再生開始位置
+        let start=0;
+        const t = u.searchParams.get('t') || u.searchParams.get('start');
+        if(t){ start = toSeconds(t); }
+        return id ? { id, start } : null;
+      }catch(e){ return null; }
+    }
+
+    function toSeconds(t){
+      // 43s / 1m23s / 2h1m5s / 90
+      if(/^\d+$/.test(t)) return parseInt(t,10);
+      let sec = 0; const re = /(\d+)(h|m|s)/g; let match;
+      while((match = re.exec(t))){
+        const val = parseInt(match[1],10);
+        if(match[2]==='h') sec += val*3600;
+        if(match[2]==='m') sec += val*60;
+        if(match[2]==='s') sec += val;
+      }
+      return sec;
+    }
+
+    function render(video){
+      // iframe (privacy enhanced)
+      const base = `https://www.youtube-nocookie.com/embed/${video.id}`;
+      const qs = new URLSearchParams({ autoplay: '1', rel:'0', start: String(video.start||0) });
+      const src = `${base}?${qs.toString()}`;
+      iframe.src = src;
+      player.style.display = '';
+
+      // サムネ&リンク
+      thumbImg.src = `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`;
+      thumbWrap.style.display = '';
+      vidInfo.textContent = `Video ID: ${video.id}${video.start?` / start ${video.start}s`:''}`;
+      openYT.href = `https://www.youtube.com/watch?v=${video.id}${video.start?`&t=${video.start}s`:''}`;
+
+      // URLパラメータ更新（共有しやすく）
+      const share = new URL(location.href);
+      share.searchParams.set('v', video.id);
+      if(video.start) share.searchParams.set('t', String(video.start)); else share.searchParams.delete('t');
+      history.replaceState({}, '', share.toString());
+    }
+
+    function showError(msg){
+      err.textContent = msg; err.style.display = '';
+      player.style.display = 'none'; thumbWrap.style.display = 'none';
+      iframe.src='about:blank';
+    }
+
+    function handle(){
+      err.style.display='none';
+      const text = urlInput.value.trim();
+      const parsed = parseYouTube(text);
+      if(!parsed) return showError('YouTubeのURLを正しく貼ってください。');
+      render(parsed);
+    }
+
+    playBtn.addEventListener('click', handle);
+    urlInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') handle(); });
+
+    copyEmbed.addEventListener('click', async ()=>{
+      const url = iframe.src;
+      try{
+        await navigator.clipboard.writeText(url);
+        copyEmbed.textContent = 'コピーしました！';
+        setTimeout(()=> copyEmbed.textContent = '埋め込みURLをコピー', 1200);
+      }catch{
+        alert('コピーに失敗しました');
+      }
+    });
+
+    // ?v=... で直接開けるように
+    (function initFromQuery(){
+      const u = new URL(location.href);
+      const v = u.searchParams.get('v');
+      const t = u.searchParams.get('t');
+      if(v){ render({ id:v, start: t? toSeconds(t):0 }); }
+    })();
+  </script>
+</body>
+</html>
