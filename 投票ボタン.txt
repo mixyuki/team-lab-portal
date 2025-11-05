@@ -1,0 +1,33 @@
+ //TODO① P1/P2 のサムネを表示（32×32を縮小して描く）
+    // やることリスト①: クリック判定で Game.decideRandomWinner()
+    //途中まで完成しました。確認よろしくお願いします
+//途中までできました。確認よろしくお願いします。  
+
+  push();noSmooth();translate(leftX,topY);
+   noStroke();fill('#13151b'); rect(-16,-16,side+32,side+25,12);
+   if(Game.p1Grid){ 
+   for(let y = 0;y < 32;y++){
+     for(let x = 0;x < 32;x++){
+       fill(Color1.palette[Game.p1Grid[y][x]]);
+       rect(x*thumbCell,y*thumbCell,thumbCell,thumbCell);
+    }
+   } 
+   }   
+  pop(); 
+  //ボタン作成
+ const hover = (mouseX >= bx && mouseX <= bx+bw &&                     mouseY >= by && mouseY<= by+bw);
+ noStroke(); 
+ fill(hover?'#222632':'#3a3f4b');
+ rect(bx,by,bw,bh,10);
+ stroke(hover?'#8ab4ff':'#3a3f4b');
+ noFill();
+ rect(bx+1.5,by+1.5,bw-3,bh-3,9);   
+ noStroke();
+ textAlign(CENTER,CENTER);
+ fill('#e7ebf3');   
+ textSize(16); 
+ text('投票', width/2,by+bh/2);   
+ 
+
+  }
+};
