@@ -94,13 +94,27 @@ const CanvasScreen = {
   
   // クリック処理：パレット選択or塗り
   onMousePressed(){
+    const hit = this.hitPalette(mouseX, mouseY);
+    if (hit !== -1) {
+      Game.selectedColor = hit;
+      return;
+    }
+    const cell = this.mouseToCell(mouseX,mouseY);
+    if (!cell) return;
+    const grid = this.getActiveGrid();
+    if (!grid) return;
+    grid[cell.y][cell.x] = Game.selectedColor;
     // やりたいこと②: パレットがクリックされたら その色にする
     // やりたいこと②: キャンバスがクリックされたら、対応セルを選択色で塗る
   },
 
   // ドラッグで塗り続ける
   onMouseDragged(){
+    const cell = this.mouseToCell(mouseX,mouseY);
+    if (!cell) return;
+    const grid = this.getActiveGrid();
+    if (!grid) return;
+    grid[cell.y][cell.x] = Game.selectedColor;
     //やりたいこと③: mouseToCell → getActiveGrid でセルを取り、選択色で塗り続ける
   }
 };
-
