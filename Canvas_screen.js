@@ -1,20 +1,16 @@
-//書いてあるものは絶対消さないこと
-
-/*キャンバスの位置やグリッドの調整　viewSize = gridSize * cellSize、originX = (width - viewSize)/2、originY = (height - viewSize)/2 - padY　などを使って値を代入し÷2をし中心にしている*/
-
 const CanvasScreen = {
-  gridSize: 32, //グリッドの大きさ
-  cellSize: 16,　//マスの大きさ
-  padY: 2,　//canvasの位置、基壁からの空白
+  gridSize: 32, 
+  cellSize: 16,　
+  padY: 2,　
 
   get viewSize(){ return this.gridSize * this.cellSize; },
   get originX(){ return (width - this.viewSize) / 2; },
   get originY(){ return (height - this.viewSize) / 2 - this.padY; },
 
-  // グリッドの枠と線
+
   drawGridBase(){
     push(); noSmooth(); translate(this.originX, this.originY);
-    noStroke(); fill(255); rect(0,0,this.viewSize,this.viewSize,10); // 白い下地
+    noStroke(); fill(255,255,255,0); rect(0,0,this.viewSize,this.viewSize,10); 
     stroke('#2a2d35'); strokeWeight(1);
     for(let i=0;i<=this.gridSize;i++){
       line(0, i*this.cellSize, this.viewSize, i*this.cellSize);
@@ -23,10 +19,10 @@ const CanvasScreen = {
     pop();
   },
 
-  // パレット
+
   paletteRect(i){
     const totalW = 5*46; const startX=(width-totalW)/2; const y=this.originY+this.viewSize+24;
-    return {x:startX+i*46, y, w:36, h:36, r:8};//■の位置
+    return {x:startX+i*46, y, w:36, h:36, r:8};
   },
   drawPaletteBase(){
     textAlign(CENTER, TOP); textSize(14);
@@ -39,7 +35,12 @@ const CanvasScreen = {
     }
   },
 
-  // ピクセル描画
+  drawWhiteBG(){
+    push(); noSmooth(); translate(this.originX, this.originY);
+    noStroke(); fill(255); rect(0,0,this.viewSize,this.viewSize,10);
+    pop();
+  },
+
   drawPixels(grid){
     if(!grid) return;
     push(); noSmooth(); translate(this.originX, this.originY);
@@ -53,7 +54,6 @@ const CanvasScreen = {
     pop();
   },
 
-  // クリック座標からセルを色塗りを計算
   mouseToCell(mx,my){
     const gx = floor((mx - this.originX) / this.cellSize);
     const gy = floor((my - this.originY) / this.cellSize);
@@ -66,7 +66,6 @@ const CanvasScreen = {
     return (Game.playTurn===1) ? Game.p1Grid : Game.p2Grid;
   },
 
-  // パレット当たり判定
   hitPalette(mx,my){
     for(let i=0;i<5;i++){
       const r=this.paletteRect(i);
@@ -75,46 +74,38 @@ const CanvasScreen = {
     return -1;
   },
 
-  // 画面描画
   draw(){
     noStroke(); fill('#151821'); rect(0,0,width,60);
     textSize(18); fill('#cfd4df'); textAlign(LEFT, CENTER);
     text(`お題：${Game.topic}`, 24, 30);
     textAlign(RIGHT, CENTER);
+    const remain = Math.max(0, Game.timerSec - Math.floor((millis()-Game.timerStartMs)/1000));
+    text(`残り ${remain} 秒 / P${Game.playTurn}`, width-24, 30);
 
-    // やりたいこと①: 残り時間の計算を実装する
-    const elapsed = floor((Game.timerSec - Game.timerStartMs) / 1000);
-    const remain = max(0,Game.timerSec - Math.floor((millis()-Game.timerStartMs)/ 1000));
-    text(`残り ${remain} 秒 / P${Game.playTurn}`, width-24, 30); 
-    // やりたいこと①: タイマー表示
-    this.drawPixels(this.getActiveGrid());
-    this.drawGridBase();
-    this.drawPaletteBase();
+    this.drawWhiteBG();                    
+    this.drawPixels(this.getActiveGrid()); 
+    this.drawGridBase();                   
+    this.drawPaletteBase();                
   },
   
-  // クリック処理：パレット選択or塗り
   onMousePressed(){
     const hit = this.hitPalette(mouseX, mouseY);
-    if (hit !== -1) {
+    if (hit !== -1){
       Game.selectedColor = hit;
       return;
     }
-    const cell = this.mouseToCell(mouseX,mouseY);
+    const cell = this.mouseToCell(mouseX, mouseY);
     if (!cell) return;
     const grid = this.getActiveGrid();
     if (!grid) return;
     grid[cell.y][cell.x] = Game.selectedColor;
-    // やりたいこと②: パレットがクリックされたら その色にする
-    // やりたいこと②: キャンバスがクリックされたら、対応セルを選択色で塗る
   },
 
-  // ドラッグで塗り続ける
   onMouseDragged(){
-    const cell = this.mouseToCell(mouseX,mouseY);
+    const cell = this.mouseToCell(mouseX, mouseY);
     if (!cell) return;
     const grid = this.getActiveGrid();
     if (!grid) return;
     grid[cell.y][cell.x] = Game.selectedColor;
-    //やりたいこと③: mouseToCell → getActiveGrid でセルを取り、選択色で塗り続ける
   }
 };
